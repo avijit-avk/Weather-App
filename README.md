@@ -17,3 +17,17 @@ const apiUrl = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${loc
 Make sure to update the url according to site from where the Api is taken.
 
 
+//Before (old approach – changes entire page background):
+
+js:
+
+document.body.style.backgroundColor = getBackgroundColor(temperature);
+
+
+//After (new approach – changes only #weather-data):
+
+js:
+
+weatherDataElement.style.backgroundColor = getBackgroundColor(temperature);
+
+
