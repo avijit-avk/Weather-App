@@ -44,8 +44,8 @@ document.getElementById("cityInput").addEventListener("change", async () => {
     if (temperature < 0) return "lightblue"; // Very cold (below 0°C)
     if (temperature < 10) return "lightgreen"; // Cold (0-9°C)
     if (temperature < 20) return "lightyellow"; // Mild (10-19°C)
-    if (temperature < 30) return "lightgoldenrodyellow"; // Warm (20-29°C)
-    return "lightcoral"; // Hot (30°C and above)
+    if (temperature < 30) return "rose"; // Warm (20-29°C)
+    return "pink"; // Hot (30°C and above)
   }
   
   // Function to display weather data on the webpage
@@ -59,25 +59,30 @@ document.getElementById("cityInput").addEventListener("change", async () => {
     }
   
     // Extracting necessary weather details
-    const temperature = data.current.temp_c; // Temperature in Celsius
-    const condition = data.current.condition.text; // Weather condition (e.g., Sunny, Cloudy)
-    const windSpeed = data.current.wind_kph; // Wind speed in kph
-    const cityName = data.location.name; // City name from API response
-    const country = data.location.country; // Country name
-    const iconUrl = `https:${data.current.condition.icon}`; // Weather condition icon
+    const temperature = data.current?.temp_c; // Use optional chaining to prevent undefined errors
+    if (temperature === undefined) {
+      console.error("Temperature data is missing from API response.");
+      weatherDataElement.innerHTML = "<p>Weather data unavailable. Try another location.</p>";
+      return;
+    }
   
-    // Changing background color based on temperature
-    document.body.style.backgroundColor = getBackgroundColor(temperature);
+    const condition = data.current.condition.text;
+    const windSpeed = data.current.wind_kph;
+    const cityName = data.location.name;
+    const country = data.location.country;
   
-    // Updating the HTML to show the weather data
+    // Apply background color only to "weather-data" instead of the whole body
+    weatherDataElement.style.backgroundColor = getBackgroundColor(temperature);
+  
+    // Updating the HTML
     weatherDataElement.innerHTML = `
       <h2>${cityName}, ${country}</h2>
-      <img src="${iconUrl}" alt="Weather Icon">
       <p>Temperature: ${temperature}°C</p>
       <p>Condition: ${condition}</p>
       <p>Wind Speed: ${windSpeed} km/h</p>
     `;
   };
+  
   
   // Automatically load weather data for a default city (Delhi) when the page loads
   window.onload = async () => {
